@@ -1,48 +1,88 @@
 <?php
-
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
     protected $fillable = [
         'name',
         'email',
         'password',
+        'role',
+    
+        'is_banned',
+        'banned_at',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+        'is_banned' => 'boolean',
+    ];
+
+    /*
+    |--------------------------------------------------------------------------
+    | RELATIONS
+    |--------------------------------------------------------------------------
+    */
+
+    public function colocations()
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+        return $this->belongsToMany(Colocation::class)
+            ->withPivot('role', 'joined_at', 'left_at')
+            ->withTimestamps();
+    }
+
+    public function expenses()
+    {
+        return $this->hasMany(Expense::class, 'payer_id');
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | ROLE METHODS
+    |--------------------------------------------------------------------------
+    */
+
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isUser(): bool
+    {
+        return $this->role === 'user';
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | BAN METHODS
+    |--------------------------------------------------------------------------
+    */
+
+    public function ban(): void
+    {
+        $this->update([
+            'is_banned' => true,
+            'banned_at' => now()
+        ]);
+    }
+
+    public function unban(): void
+    {
+        $this->update([
+            'is_banned' => false,
+            'banned_at' => null
+        ]);
     }
 }
