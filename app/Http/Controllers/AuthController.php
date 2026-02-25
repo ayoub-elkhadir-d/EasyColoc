@@ -24,7 +24,10 @@ public function register(Request $request)
     ]);
 
  
-    $role = User::count() === 0 ? 'admin' : 'member';
+    $role =  'member';
+    if(User::count() === 0){
+        $role = 'admin';
+    }
 
     $user = User::create([
         'name' => $request->name,
@@ -32,7 +35,6 @@ public function register(Request $request)
         'password' => Hash::make($request->password),
         'role' => $role,
     ]);
-
     Auth::login($user);
 
     return redirect('/dashboard');
@@ -50,7 +52,7 @@ public function register(Request $request)
         if (Auth::attempt([
             'email' => $request->email,
             'password' => $request->password
-        ])) {
+        ]) && auth()->user()->is_banned != true) {
             return redirect('/dashboard');
         }
 

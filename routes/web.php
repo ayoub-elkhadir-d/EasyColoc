@@ -19,8 +19,8 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 
 Route::get('/dashboard', [UserController::class,'displayUsers'])
-    ->middleware('auth')
+    ->middleware(['auth','ban'])
     ->name('dashboard');
 
 
-Route::post('/users/{user}/toggle-ban', [DashboardController::class,'toggleBan'])->name('users.toggleBan')->middleware('auth');
+Route::post('/users/{user}/toggle-ban', [UserController::class,'toggleBan'])->name('users.toggleBan')->middleware(['auth','admin','ban']);

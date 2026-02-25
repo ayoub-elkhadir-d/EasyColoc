@@ -10,14 +10,14 @@ class UserController extends Controller
     $users = User::all();
     return view('/dashboard', compact('users'));
  }
- public function toggleBan(User $user)
-    {
-        if($user->is_banned) {
-            $user->unban();
-        } else {
-            $user->ban();
-        }
-
-        return redirect()->back();
+    public function toggleBan(User $user)
+{
+    if($user->is_banned) {
+        $user->unban();
+    } else {
+        $user->ban();
     }
+
+    return redirect()->back();
+}
 }
