@@ -15,27 +15,28 @@ class AuthController extends Controller
         return view('auth.register');
     }
 
-    public function register(Request $request)
-    {
-     
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:6',
-        ]);
+public function register(Request $request)
+{
+    $request->validate([
+        'name' => 'required',
+        'email' => 'required|email|unique:users',
+        'password' => 'required|min:6',
+    ]);
 
-        
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+ 
+    $role = User::count() === 0 ? 'admin' : 'member';
 
-        
-        Auth::login($user);
+    $user = User::create([
+        'name' => $request->name,
+        'email' => $request->email,
+        'password' => Hash::make($request->password),
+        'role' => $role,
+    ]);
 
-        return redirect('/dashboard');
-    }
+    Auth::login($user);
+
+    return redirect('/dashboard');
+}
 
 
     public function showLogin()
