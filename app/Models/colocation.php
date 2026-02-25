@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class colocation extends Model
+class Colocation extends Model
 {
-
+    protected $fillable = ['num', 'description'];
 }

@@ -90,6 +90,10 @@
             @csrf
             <button type="submit" style="background:#3b82f6; border-radius:5px;">Logout</button>
         </form>
+           <form method="GET" action="{{ route('homeColoc') }}" style="display:inline;">
+            @csrf
+            <button type="submit" style="background:#3b82f6; border-radius:5px;">add colocation</button>
+        </form>
     </div>
 </nav>
 
