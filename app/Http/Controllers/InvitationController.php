@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Invitation;
 use App\Models\Colocation;
 use Illuminate\Http\Request;
+
 use Illuminate\Support\Facades\Mail;
 
 class InvitationController extends Controller
@@ -12,7 +13,8 @@ class InvitationController extends Controller
     public function send(Request $request, Colocation $colocation)
     {
         if ($colocation->owner_id !== auth()->id()) {
-            abort(403);
+            // abort(403);
+            
         }
 
         $request->validate(['email' => 'required|email']);
@@ -22,15 +24,14 @@ class InvitationController extends Controller
             'email' => $request->email,
         ]);
 
-        Mail::raw("Join colocation: " . url('/invitations/' . $invitation->token), function ($message) use ($request) {
+        Mail::raw(url('/invitations/' . $invitation->token), function ($message) use ($request) {
             $message->to($request->email)->subject('Colocation Invitation');
         });
 
         return back()->with('success', 'Invitation sent');
     }
 
-    public function accept($token)
-    {
+    public function accept($token){
         $invitation = Invitation::where('token', $token)->where('accepted', false)->firstOrFail();
 
         if (auth()->user()->hasActiveMembership()) {

@@ -9,7 +9,7 @@ class ColocationController extends Controller
 {
     public function index()
     {
-        $colocation = auth()->user()->ownedColocations()->first() ?? auth()->user()->colocations()->first();
+        $colocation = auth()->user()->ownedColocations()->first() ;
         return view('home', compact('colocation'));
     }
 
@@ -35,17 +35,17 @@ class ColocationController extends Controller
 
     public function update(Request $request, Colocation $colocation)
     {
-        if ($colocation->owner_id !== auth()->id()) {
-            abort(403);
-        }
+        // if ($colocation->owner_id !== auth()->id()) {
+        //     abort(403);
+        // }
 
-        $request->validate([
-            'num' => 'required|string',
-            'description' => 'required|string',
-        ]);
+        // $request->validate([
+        //     'num' => 'required|string',
+        //     'description' => 'required|string',
+        // ]);
 
-        $colocation->update($request->only(['num', 'description']));
-        return redirect()->route('home')->with('success', 'Colocation updated');
+        // $colocation->update($request->only(['num', 'description']));
+        // return redirect()->route('home')->with('success', 'Colocation updated');
     }
 
     public function destroy(Colocation $colocation)
@@ -57,7 +57,7 @@ class ColocationController extends Controller
         $colocation->delete();
         return redirect()->route('home')->with('success', 'Colocation deleted');
     }
-
+    
     public function leave(Colocation $colocation)
     {
         auth()->user()->colocations()->detach($colocation->id);

@@ -37,7 +37,7 @@ class User extends Authenticatable
 
     public function colocations()
     {
-        return $this->belongsToMany(Colocation::class);
+         return $this->belongsToMany(Colocation::class);
     }
 
     public function ownedColocations()
@@ -45,15 +45,17 @@ class User extends Authenticatable
         return $this->hasMany(Colocation::class, 'owner_id');
     }
 
-    public function hasActiveMembership()
+    public function colocationMemberships()
     {
-        return $this->colocations()->exists() || $this->ownedColocations()->exists();
+        return $this->hasMany(ColocationUser::class);
     }
 
-    public function expenses()
+    public function hasActiveMembership()
     {
-        return $this->hasMany(Expense::class, 'payer_id');
+        return $this->ownedColocations()->exists() || $this->colocationMemberships()->exists();
     }
+
+ 
 
     /*
     |--------------------------------------------------------------------------
