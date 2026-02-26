@@ -9,7 +9,13 @@ class ColocationController extends Controller
 {
     public function index()
     {
-        $colocation = auth()->user()->ownedColocations()->first() ;
+        $colocation = auth()->user()->ownedColocations()->first() 
+                   ?? auth()->user()->colocations()->first();
+        return view('home', compact('colocation'));
+    }
+
+    public function show(Colocation $colocation)
+    {
         return view('home', compact('colocation'));
     }
 
