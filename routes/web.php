@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ColocationController;
+use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\UserController;
 
 Route::get('/', function () {
@@ -17,8 +18,17 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::get('/home', [ColocationController::class, 'index'])->middleware('auth')->name('homeColoc');
-Route::post('/colocation', [ColocationController::class, 'Create'])->middleware('auth')->name('colocation.store');
+Route::middleware('auth')->group(function () {
+    Route::get('/home', [ColocationController::class, 'index'])->name('home');
+    Route::post('/colocation', [ColocationController::class, 'Create'])->name('colocation.store');
+    Route::put('/colocation/{colocation}', [ColocationController::class, 'update'])->name('colocation.update');
+    Route::delete('/colocation/{colocation}', [ColocationController::class, 'destroy'])->name('colocation.destroy');
+    Route::post('/colocation/{colocation}/leave', [ColocationController::class, 'leave'])->name('colocation.leave');
+    Route::delete('/colocation/{colocation}/member/{userId}', [ColocationController::class, 'removeMember'])->name('colocation.removeMember');
+    
+    Route::post('/colocation/{colocation}/invite', [InvitationController::class, 'send'])->name('invitation.send');
+    Route::get('/invitations/{token}', [InvitationController::class, 'accept'])->name('invitation.accept');
+});
 
 Route::get('/dashboard', [UserController::class,'displayUsers'])
     ->middleware(['auth','ban'])
