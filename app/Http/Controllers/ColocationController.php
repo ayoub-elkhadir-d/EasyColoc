@@ -20,23 +20,24 @@ class ColocationController extends Controller
             'members',
             'categories',
             'depenses.payer'
-        ]);
-    public function index()
-    {
-        $colocation = auth()->user()->ownedColocations()->first() 
-                   ?? auth()->user()->colocations()->first();
-        return view('home', compact('colocation'));
-    }
-
-    public function show(Colocation $colocation)
-    {
-        return view('home', compact('colocation'));
-    }
+        ]);}
 
     $users = \App\Models\User::all();
 
     return view('home', compact('colocation', 'users'));
 }
+
+// public function index()
+//     {
+//         $colocation = auth()->user()->ownedColocations()->first() 
+//                    ?? auth()->user()->colocations()->first();
+//         return view('home', compact('colocation'));
+//     }
+
+//     public function show(Colocation $colocation)
+//     {
+//         return view('home', compact('colocation'));
+//     }
 
     public function Create(Request $request)
     {
