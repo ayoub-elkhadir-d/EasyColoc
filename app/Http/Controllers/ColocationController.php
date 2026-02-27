@@ -10,7 +10,8 @@ class ColocationController extends Controller
     public function index()
     {
         $colocation = auth()->user()->ownedColocations()->first() ?? auth()->user()->colocations()->first();
-        return view('home', compact('colocation'));
+        $users = \App\Models\User::all();
+        return view('home', compact('colocation', 'users'));
     }
 
     public function Create(Request $request)

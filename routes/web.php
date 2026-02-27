@@ -5,6 +5,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ColocationController;
 use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\DepenseController;
+use App\Http\Controllers\CategoryController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -28,6 +30,12 @@ Route::middleware('auth')->group(function () {
     
     Route::post('/colocation/{colocation}/invite', [InvitationController::class, 'send'])->name('invitation.send');
     Route::get('/invitations/{token}', [InvitationController::class, 'accept'])->name('invitation.accept');
+
+    Route::post('/colocation/{colocation}/depense', [DepenseController::class, 'store'])->name('depense.store');
+    Route::delete('/colocation/{colocation}/depense/{depense}', [DepenseController::class, 'destroy'])->name('depense.destroy');
+
+    Route::post('/colocation/{colocation}/category', [CategoryController::class, 'store'])->name('category.store');
+    Route::delete('/colocation/{colocation}/category/{category}', [CategoryController::class, 'destroy'])->name('category.destroy');
 });
 
 Route::get('/dashboard', [UserController::class,'displayUsers'])
