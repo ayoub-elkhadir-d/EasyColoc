@@ -7,12 +7,26 @@ use Illuminate\Http\Request;
 
 class ColocationController extends Controller
 {
-    public function index()
-    {
-        $colocation = auth()->user()->ownedColocations()->first() ?? auth()->user()->colocations()->first();
-        $users = \App\Models\User::all();
-        return view('home', compact('colocation', 'users'));
+  public function index()
+{
+    $user = auth()->user();
+
+    $colocation = $user->ownedColocations()->first() 
+                 ?? $user->colocations()->first();
+
+    if ($colocation) {
+        $colocation->load([
+            'owner',
+            'members',
+            'categories',
+            'depenses.payer'
+        ]);
     }
+
+    $users = \App\Models\User::all();
+
+    return view('home', compact('colocation', 'users'));
+}
 
     public function Create(Request $request)
     {
