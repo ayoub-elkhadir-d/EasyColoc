@@ -54,7 +54,7 @@ public function register(Request $request)
             'email' => $request->email,
             'password' => $request->password
         ]) ) {
-            return redirect('/dashboard');
+            return redirect('/home');
         }
 
         return back()->with('error', 'Email or Password incorrect');

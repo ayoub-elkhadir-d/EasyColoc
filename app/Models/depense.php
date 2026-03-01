@@ -22,4 +22,9 @@ class Depense extends Model
     {
         return $this->belongsTo(Category::class);
     }
+
+    public function balances()
+    {
+        return $this->hasMany(Balance::class);
+    }
 }

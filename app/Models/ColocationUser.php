@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 class ColocationUser extends Pivot
 {
     protected $table = 'colocation_user';
+    protected $fillable = ['left_at'];
+    protected $casts = ['left_at' => 'datetime'];
 
     public function user()
     {

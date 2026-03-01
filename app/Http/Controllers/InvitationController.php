@@ -41,6 +41,6 @@ class InvitationController extends Controller
         $invitation->colocation->members()->attach(auth()->id());
         $invitation->update(['accepted' => true]);
 
-        return redirect()->route('colocations.show', $invitation->colocation_id)->with('success', 'Invitation accepted');
+        return redirect()->route('home')->with('success', 'Invitation accepted');
     }
 }

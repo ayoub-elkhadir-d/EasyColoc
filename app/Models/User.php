@@ -16,6 +16,7 @@ class User extends Authenticatable
         'role',
         'is_banned',
         'banned_at',
+        'reputation',
     ];
 
     protected $hidden = [
@@ -93,5 +94,15 @@ class User extends Authenticatable
             'is_banned' => false,
             'banned_at' => null
         ]);
+    }
+
+    public function decrementReputation(int $points): void
+    {
+        $this->decrement('reputation', $points);
+    }
+
+    public function incrementReputation(int $points): void
+    {
+        $this->increment('reputation', $points);
     }
 }

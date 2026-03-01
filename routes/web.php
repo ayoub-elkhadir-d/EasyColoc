@@ -7,6 +7,7 @@ use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DepenseController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ProfileController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -25,6 +26,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/colocation', [ColocationController::class, 'Create'])->name('colocation.store');
     Route::put('/colocation/{colocation}', [ColocationController::class, 'update'])->name('colocation.update');
     Route::delete('/colocation/{colocation}', [ColocationController::class, 'destroy'])->name('colocation.destroy');
+    Route::post('/colocation/{colocation}/cancel', [ColocationController::class, 'cancel'])->name('colocation.cancel');
     Route::post('/colocation/{colocation}/leave', [ColocationController::class, 'leave'])->name('colocation.leave');
     Route::delete('/colocation/{colocation}/member/{userId}', [ColocationController::class, 'removeMember'])->name('colocation.removeMember');
     
@@ -33,9 +35,14 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/colocation/{colocation}/depense', [DepenseController::class, 'store'])->name('depense.store');
     Route::delete('/colocation/{colocation}/depense/{depense}', [DepenseController::class, 'destroy'])->name('depense.destroy');
+    Route::post('/colocation/{colocation}/depense/{depense}/balance/{balance}/pay', [DepenseController::class, 'markPaid'])->name('balance.markPaid');
 
     Route::post('/colocation/{colocation}/category', [CategoryController::class, 'store'])->name('category.store');
     Route::delete('/colocation/{colocation}/category/{category}', [CategoryController::class, 'destroy'])->name('category.destroy');
+    
+    Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
 });
 
 Route::get('/dashboard', [UserController::class,'displayUsers'])

@@ -83,11 +83,37 @@ class ColocationController extends Controller
         $colocation->delete();
         return redirect()->route('home')->with('success', 'Colocation deleted');
     }
+
+    public function cancel(Colocation $colocation)
+    {
+        if ($colocation->owner_id !== auth()->id()) {
+            abort(403);
+        }
+
+        $colocation->cancel();
+        return redirect()->route('home')->with('success', 'Colocation cancelled. Your reputation decreased by 1 point.');
+    }
     
     public function leave(Colocation $colocation)
     {
-        auth()->user()->colocations()->detach($colocation->id);
-        return redirect()->route('home')->with('success', 'You left the colocation');
+        $userId = auth()->id();
+        $debt = $colocation->calculateMemberDebt($userId);
+        
+        $membership = $colocation->members()->where('user_id', $userId)->first();
+        
+        if ($membership) {
+            $membership->pivot->update(['left_at' => now()]);
+            
+            if ($debt > 0) {
+                auth()->user()->decrementReputation(1);
+                return redirect()->route('home')->with('success', "You left the colocation with an unpaid debt of {$debt}€. Your reputation decreased by 1 point.");
+            }
+            
+            auth()->user()->incrementReputation(1);
+            return redirect()->route('home')->with('success', 'You left the colocation. Your reputation increased by 1 point.');
+        }
+        
+        return redirect()->route('home')->withErrors(['error' => 'You are not a member of this colocation']);
     }
 
     public function removeMember(Colocation $colocation, $userId)
@@ -98,5 +124,6 @@ class ColocationController extends Controller
 
         $colocation->members()->detach($userId);
         return back()->with('success', 'Member removed');
+
     }
 }
